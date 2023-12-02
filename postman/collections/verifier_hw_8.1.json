@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "c6017dfc-192b-41ce-b468-690184b48b72",
+		"_postman_id": "cc7fb36e-0447-4e50-9129-58de311fa3d8",
 		"name": "verifier_hw_8.1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_uid": "20300544-c6017dfc-192b-41ce-b468-690184b48b72"
+		"_uid": "20300544-cc7fb36e-0447-4e50-9129-58de311fa3d8"
 	},
 	"item": [
 		{
@@ -12,7 +12,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "1376a0de-ee70-4c73-b9c6-df0a2d5940bb",
+						"id": "26ef5425-de3f-4cb9-9072-87084560fb20",
 						"exec": [
 							"let jsonBody = pm.response.json();",
 							"",
@@ -29,7 +29,7 @@
 					}
 				}
 			],
-			"id": "cfa222ee-1701-4d9e-ba23-9f58bd367a18",
+			"id": "cc532f6a-b905-40ff-97a3-7a1dd36b9d54",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -120,18 +120,22 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "209ba92e-d333-4ba1-85bc-9163dbd1f066",
+						"id": "a333423d-5268-4116-8a27-54dcc1e11958",
 						"exec": [
 							"let currentAmountOfTasks = pm.response.json().length;",
-							"console.log(pm.response.json().length)",
+							"console.log(pm.response.json().length);",
 							"",
-							"pm.collectionVariables.set('currentAmountOfTasks', currentAmountOfTasks)",
-							"pm.collectionVariables.set(\"ids\", [])",
+							"pm.collectionVariables.set('currentAmountOfTasks', currentAmountOfTasks);",
+							"",
+							"",
 							"",
 							"if(currentAmountOfTasks < pm.collectionVariables.get('targetNumberOfTasks')) {",
-							"    postman.setNextRequest('create a task')",
-							"} else {",
-							"    postman.setNextRequest('change task text')}"
+							"    postman.setNextRequest('create a task');",
+							"} else if (currentAmountOfTasks >= pm.collectionVariables.get('targetNumberOfTasks')) {",
+							"    pm.collectionVariables.set(\"ids\", pm.response.json().map(task => task.id));",
+							"    pm.collectionVariables.set('lastID', pm.collectionVariables.get(\"ids\")[pm.collectionVariables.get(\"ids\").length - 1]);",
+							"    postman.setNextRequest('change task text');",
+							"};"
 						],
 						"type": "text/javascript"
 					}
@@ -139,7 +143,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "40194d4b-9bbd-4b33-a85d-5e3494c49d6c",
+						"id": "59cf4ec0-2198-415c-a4e9-06c61a4286d1",
 						"exec": [
 							""
 						],
@@ -147,7 +151,7 @@
 					}
 				}
 			],
-			"id": "be4806c2-4a9e-4e2d-8ee1-676d0fc028b2",
+			"id": "3c34bdac-0750-46b4-bfd2-a524be4489a8",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -198,7 +202,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "1a4a05d2-553a-4568-b756-d50d8a324639",
+						"id": "28fbb9c2-2e7c-4b21-875e-f379a7d765bb",
 						"exec": [
 							"let jsonData = pm.response.json();",
 							"",
@@ -229,7 +233,7 @@
 					}
 				}
 			],
-			"id": "82bdbd1e-8580-4b97-af85-90ca5be68537",
+			"id": "2d9647a2-a19c-49e6-91c0-bf6dcd97db09",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -278,7 +282,17 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "0e02daf0-121b-457e-ade2-0d8f39f93164",
+						"id": "5fb8e376-35dc-4bbc-b03f-4028a30c4df6",
+						"exec": [
+							"pm.collectionVariables.get(\"lastID\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f4222093-1b7f-44a8-9fde-07c11e755d46",
 						"exec": [
 							""
 						],
@@ -286,7 +300,7 @@
 					}
 				}
 			],
-			"id": "2c8f104b-5787-4745-a860-72e3b731bc3c",
+			"id": "7fd08370-ccb2-4107-80f1-a7500cb6ec16",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -336,7 +350,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "ffc292c7-0750-4c85-842c-23c346eb0674",
+						"id": "a347923e-cad4-45fa-8840-98c8f15bed17",
 						"exec": [
 							"let arr = pm.collectionVariables.get('ids')",
 							"",
@@ -353,13 +367,14 @@
 							"        console.log(response);",
 							"        }",
 							"});",
-							""
+							"",
+							"pm.collectionVariables.unset(\"lastID\");"
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
-			"id": "87998a6b-1e63-4019-b710-f43b69bdd0a4",
+			"id": "4c320108-4837-40f2-9803-f427a1a6f9ab",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -410,7 +425,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "cda6119d-8861-422d-9279-7db2c9ae7143",
+				"id": "1636c703-c844-4b3c-b8b6-2e3ca8b3e714",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -420,7 +435,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "cc3a18ba-22f3-4aa9-bb5f-5524ad2e73ef",
+				"id": "ce09d6c0-61c5-4aad-9973-4751880f633e",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -430,50 +445,44 @@
 	],
 	"variable": [
 		{
-			"id": "b8e2d642-c762-4c7e-832b-b5bdbd8c0308",
+			"id": "b1acc947-67db-48a9-9ee3-1e6217a21ee8",
 			"key": "baseUrl",
 			"value": "http://localhost:8080",
 			"type": "string"
 		},
 		{
-			"id": "f13854ff-0556-484e-ace7-63993c14f310",
+			"id": "902e318f-6f34-40b1-aa27-65e479611f1b",
 			"key": "adminLogin",
 			"value": "admin",
 			"type": "string"
 		},
 		{
-			"id": "cf328c4c-5059-43d8-8d96-057d028deb43",
+			"id": "3c7b629a-b300-4e94-ad55-0cf479cc0a61",
 			"key": "adminPassword",
 			"value": "admin",
 			"type": "string"
 		},
 		{
-			"id": "89584a9d-b87d-4ad7-b01f-f41902f97649",
+			"id": "b7de1ce8-202c-4925-8401-d98713e11949",
 			"key": "id_token",
 			"value": "{{id_token}}",
 			"type": "string"
 		},
 		{
-			"id": "3c0391fb-3f59-41cb-878d-b9ce75528112",
+			"id": "a1a25007-aec2-4421-80f7-4a67ee13c893",
 			"key": "currentAmountOfTasks",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "0e60c314-505b-47c3-be06-e6a7bda8d4ec",
+			"id": "6275563e-6c36-4813-8848-6966e243949f",
 			"key": "targetNumberOfTasks",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "5296cae1-851d-4d62-8126-cd13698dc753",
+			"id": "b49fcbfd-5769-4bb2-926a-c8851c2c3970",
 			"key": "ids",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"id": "3fd1cc06-89f5-49dc-bbba-71935b3995a9",
-			"key": "lastID",
 			"value": "",
 			"type": "string"
 		}
