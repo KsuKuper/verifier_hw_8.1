@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "7c8c8bc6-d172-4814-9732-ba8793aedff4",
-		"name": "Create and change task iterations",
+		"_postman_id": "c6017dfc-192b-41ce-b468-690184b48b72",
+		"name": "verifier_hw_8.1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_uid": "3431373-7c8c8bc6-d172-4814-9732-ba8793aedff4"
+		"_uid": "20300544-c6017dfc-192b-41ce-b468-690184b48b72"
 	},
 	"item": [
 		{
@@ -12,16 +12,24 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "317e6091-ac33-4e75-b88c-aead74bc40f9",
+						"id": "1376a0de-ee70-4c73-b9c6-df0a2d5940bb",
 						"exec": [
-							"let jsonData = pm.response.json();",
-							"pm.environment.set('token', jsonData.id_token)"
+							"let jsonBody = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response body contains id_token\", function () {",
+							"    pm.expect(jsonBody).to.have.property(\"id_token\");",
+							"    pm.collectionVariables.set(\"id_token\", jsonBody.id_token);",
+							"});"
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
-			"id": "000d5bce-1fbe-4442-bb9b-5c896289170d",
+			"id": "cfa222ee-1701-4d9e-ba23-9f58bd367a18",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -91,14 +99,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"username\":\"{{adminLogin}}\",\"password\":\"{{adminPassword}}\",\"rememberMe\":false}"
+					"raw": "{\n    \"username\": \"{{adminLogin}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"rememberMe\": false\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/authenticate",
+					"raw": "{{baseUrl}}/api/authenticate",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"api",
 						"authenticate"
 					]
 				}
@@ -111,15 +120,15 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "235f919d-8a50-4dad-a4db-3507b6dac55a",
+						"id": "209ba92e-d333-4ba1-85bc-9163dbd1f066",
 						"exec": [
 							"let currentAmountOfTasks = pm.response.json().length;",
 							"console.log(pm.response.json().length)",
 							"",
-							"pm.environment.set('currentAmountOfTasks', currentAmountOfTasks)",
-							"pm.environment.set(\"ids\", [])",
+							"pm.collectionVariables.set('currentAmountOfTasks', currentAmountOfTasks)",
+							"pm.collectionVariables.set(\"ids\", [])",
 							"",
-							"if(currentAmountOfTasks < pm.environment.get('targetNumberOfTasks')) {",
+							"if(currentAmountOfTasks < pm.collectionVariables.get('targetNumberOfTasks')) {",
 							"    postman.setNextRequest('create a task')",
 							"} else {",
 							"    postman.setNextRequest('change task text')}"
@@ -130,7 +139,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "a3b0ae78-2bad-4037-a331-da3cea4acf58",
+						"id": "40194d4b-9bbd-4b33-a85d-5e3494c49d6c",
 						"exec": [
 							""
 						],
@@ -138,28 +147,35 @@
 					}
 				}
 			],
-			"id": "43a438c7-4c79-44d0-848b-a251515ced36",
+			"id": "be4806c2-4a9e-4e2d-8ee1-676d0fc028b2",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{id_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [
 					{
 						"key": "accept",
 						"value": "*/*"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTcwMDY1MTA3OCwiYXV0aCI6IlJPTEVfQURNSU4iLCJpYXQiOjE3MDA1NjQ2Nzh9.vIN53s5RHi0_NuFKchJ3Wxi3ajjjtTt_0X_qJSYtFti7Xw4Veqy9jEpRervasFgwCyrZGihIehGmwaUXLYIaFg"
 					}
 				],
 				"url": {
-					"raw": "{{baseUrl}}/tasks?page=0&size=100",
+					"raw": "{{baseUrl}}/api/tasks?page=0&size=100",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"api",
 						"tasks"
 					],
 					"query": [
@@ -182,7 +198,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "47eb0efe-9d81-4616-b88e-6e54e79610b8",
+						"id": "1a4a05d2-553a-4568-b756-d50d8a324639",
 						"exec": [
 							"let jsonData = pm.response.json();",
 							"",
@@ -190,19 +206,19 @@
 							"    pm.expect(jsonData.text).to.eql(\"some text\");",
 							"});",
 							"",
-							"const ids = pm.environment.get(\"ids\")",
+							"const ids = pm.collectionVariables.get(\"ids\")",
 							"console.log(\"jsonData.id is \" + jsonData.id)",
 							"ids.push(jsonData.id)",
 							"console.log(ids)",
-							"pm.environment.set(\"ids\", ids)",
+							"pm.collectionVariables.set(\"ids\", ids)",
 							"",
-							"pm.environment.set('lastID', jsonData.id)",
+							"pm.collectionVariables.set('lastID', jsonData.id)",
 							"",
-							"let currentAmountOfTasks = pm.environment.get(\"currentAmountOfTasks\");",
+							"let currentAmountOfTasks = pm.collectionVariables.get(\"currentAmountOfTasks\");",
 							"currentAmountOfTasks++;",
-							"pm.environment.set('currentAmountOfTasks', currentAmountOfTasks)",
+							"pm.collectionVariables.set('currentAmountOfTasks', currentAmountOfTasks)",
 							"",
-							"if(currentAmountOfTasks < pm.environment.get('targetNumberOfTasks')) {",
+							"if(currentAmountOfTasks < pm.collectionVariables.get('targetNumberOfTasks')) {",
 							"    postman.setNextRequest(\"create a task\")",
 							"} else {",
 							"    postman.setNextRequest('change task text')",
@@ -213,11 +229,21 @@
 					}
 				}
 			],
-			"id": "1e3dbd12-d8d7-4ca1-9a81-e38c05cb2eab",
+			"id": "82bdbd1e-8580-4b97-af85-90ca5be68537",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{id_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [
 					{
@@ -227,10 +253,6 @@
 					{
 						"key": "Content-Type",
 						"value": "application/json"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTcwMDY1MTA3OCwiYXV0aCI6IlJPTEVfQURNSU4iLCJpYXQiOjE3MDA1NjQ2Nzh9.vIN53s5RHi0_NuFKchJ3Wxi3ajjjtTt_0X_qJSYtFti7Xw4Veqy9jEpRervasFgwCyrZGihIehGmwaUXLYIaFg"
 					}
 				],
 				"body": {
@@ -238,11 +260,12 @@
 					"raw": "{\n  \"text\": \"some text\",\n  \"answer\": \"string\",\n  \"title\": \"string\"\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/tasks",
+					"raw": "{{baseUrl}}/api/tasks",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"api",
 						"tasks"
 					]
 				}
@@ -255,7 +278,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "39e2b88c-58d2-4c0a-b861-1e21219d08eb",
+						"id": "0e02daf0-121b-457e-ade2-0d8f39f93164",
 						"exec": [
 							""
 						],
@@ -263,11 +286,21 @@
 					}
 				}
 			],
-			"id": "32e03ff6-baea-465b-a2e2-3a97c70939ce",
+			"id": "2c8f104b-5787-4745-a860-72e3b731bc3c",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{id_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PATCH",
 				"header": [
 					{
@@ -277,10 +310,6 @@
 					{
 						"key": "Content-Type",
 						"value": "application/json"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTcwMDY1MTA3OCwiYXV0aCI6IlJPTEVfQURNSU4iLCJpYXQiOjE3MDA1NjQ2Nzh9.vIN53s5RHi0_NuFKchJ3Wxi3ajjjtTt_0X_qJSYtFti7Xw4Veqy9jEpRervasFgwCyrZGihIehGmwaUXLYIaFg"
 					}
 				],
 				"body": {
@@ -288,11 +317,12 @@
 					"raw": "{\n  \"id\": \"{{lastID}}\",\n  \"text\": \"some new new text\"\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/tasks/{{lastID}}",
+					"raw": "{{baseUrl}}/api/tasks/{{lastID}}",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"api",
 						"tasks",
 						"{{lastID}}"
 					]
@@ -306,54 +336,58 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a67eb558-5ffd-4c07-9a1c-9dc647995d0a",
+						"id": "ffc292c7-0750-4c85-842c-23c346eb0674",
 						"exec": [
-							"let arr = pm.environment.get('ids')",
+							"let arr = pm.collectionVariables.get('ids')",
 							"",
 							"arr.forEach((id)=>{",
 							"    pm.sendRequest(",
-							"        {url: `https://sqlverifier-50d286d70656.herokuapp.com/api/tasks/${id}`,",
-							"        method: 'DELETE',",
-							"        header:",
-							"        {'Authorization': 'Bearer ' + pm.environment.get('token'),",
-							"        'accept': '*/*'}",
-							"        }",
+							"            {",
+							"                url: `${pm.collectionVariables.get('baseUrl')}/api/tasks/${id}`,",
+							"                method: \"DELETE\",",
+							"                header: {",
+							"                            \"Authorization\": \"Bearer \" + pm.collectionVariables.get('id_token'),",
+							"                            \"Accept\": \"*/*\"",
+							"            }})",
 							"        , function (err, response) {",
 							"        console.log(response);",
-							"    });",
-							"})",
-							"",
-							"",
-							"",
-							"",
+							"        }",
+							"});",
 							""
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
-			"id": "3f9de192-3f64-45fa-8cd2-68c9041fce4b",
+			"id": "87998a6b-1e63-4019-b710-f43b69bdd0a4",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{id_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [
 					{
 						"key": "accept",
 						"value": "*/*"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTcwMDY1MTA3OCwiYXV0aCI6IlJPTEVfQURNSU4iLCJpYXQiOjE3MDA1NjQ2Nzh9.vIN53s5RHi0_NuFKchJ3Wxi3ajjjtTt_0X_qJSYtFti7Xw4Veqy9jEpRervasFgwCyrZGihIehGmwaUXLYIaFg"
 					}
 				],
 				"url": {
-					"raw": "{{baseUrl}}/tasks/{{lastID}}",
+					"raw": "{{baseUrl}}/api/tasks/{{lastID}}",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
+						"api",
 						"tasks",
 						"{{lastID}}"
 					]
@@ -376,7 +410,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "a565044a-0e9e-4dc2-8e8f-13f3573a4c5d",
+				"id": "cda6119d-8861-422d-9279-7db2c9ae7143",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -386,12 +420,62 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "006424dc-5fee-4e73-b440-1c4203f89177",
+				"id": "cc3a18ba-22f3-4aa9-bb5f-5524ad2e73ef",
 				"type": "text/javascript",
 				"exec": [
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"id": "b8e2d642-c762-4c7e-832b-b5bdbd8c0308",
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"id": "f13854ff-0556-484e-ace7-63993c14f310",
+			"key": "adminLogin",
+			"value": "admin",
+			"type": "string"
+		},
+		{
+			"id": "cf328c4c-5059-43d8-8d96-057d028deb43",
+			"key": "adminPassword",
+			"value": "admin",
+			"type": "string"
+		},
+		{
+			"id": "89584a9d-b87d-4ad7-b01f-f41902f97649",
+			"key": "id_token",
+			"value": "{{id_token}}",
+			"type": "string"
+		},
+		{
+			"id": "3c0391fb-3f59-41cb-878d-b9ce75528112",
+			"key": "currentAmountOfTasks",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "0e60c314-505b-47c3-be06-e6a7bda8d4ec",
+			"key": "targetNumberOfTasks",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "5296cae1-851d-4d62-8126-cd13698dc753",
+			"key": "ids",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "3fd1cc06-89f5-49dc-bbba-71935b3995a9",
+			"key": "lastID",
+			"value": "",
+			"type": "string"
 		}
 	]
 }
