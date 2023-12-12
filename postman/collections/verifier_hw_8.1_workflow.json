@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "cc7fb36e-0447-4e50-9129-58de311fa3d8",
-		"name": "verifier_hw_8.1",
+		"_postman_id": "8e082e5f-6504-450a-959c-2a28494a4618",
+		"name": "verifier_hw_8.1_workflow",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_uid": "20300544-cc7fb36e-0447-4e50-9129-58de311fa3d8"
+		"_uid": "20300544-8e082e5f-6504-450a-959c-2a28494a4618"
 	},
 	"item": [
 		{
@@ -12,7 +12,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "26ef5425-de3f-4cb9-9072-87084560fb20",
+						"id": "c5337f27-58ce-4cdd-ac0c-e337f60d66c3",
 						"exec": [
 							"let jsonBody = pm.response.json();",
 							"",
@@ -29,7 +29,7 @@
 					}
 				}
 			],
-			"id": "cc532f6a-b905-40ff-97a3-7a1dd36b9d54",
+			"id": "95b5ce84-f49a-495b-8cf9-a27a60e8c621",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -120,22 +120,25 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a333423d-5268-4116-8a27-54dcc1e11958",
+						"id": "12ddaec5-5f17-471a-9ab4-fb1e8a5132e5",
 						"exec": [
 							"let currentAmountOfTasks = pm.response.json().length;",
-							"console.log(pm.response.json().length);",
+							"console.log(\"currentAmountOfTasks\", currentAmountOfTasks);",
+							"pm.collectionVariables.set(\"currentAmountOfTasks\", pm.response.json().length);",
 							"",
-							"pm.collectionVariables.set('currentAmountOfTasks', currentAmountOfTasks);",
+							"let counter = 5;",
 							"",
+							"if(counter > currentAmountOfTasks) {",
+							"    postman.setNextRequest(\"create a task\");",
+							"    console.log(\"create a task\");",
+							"} else {",
+							"    postman.setNextRequest(\"change task text\");",
+							"    console.log(\"change task text\");",
+							"};",
 							"",
+							"pm.collectionVariables.set(\"allTaskIds\", pm.response.json().map(task => task.id));",
 							"",
-							"if(currentAmountOfTasks < pm.collectionVariables.get('targetNumberOfTasks')) {",
-							"    postman.setNextRequest('create a task');",
-							"} else if (currentAmountOfTasks >= pm.collectionVariables.get('targetNumberOfTasks')) {",
-							"    pm.collectionVariables.set(\"ids\", pm.response.json().map(task => task.id));",
-							"    pm.collectionVariables.set('lastID', pm.collectionVariables.get(\"ids\")[pm.collectionVariables.get(\"ids\").length - 1]);",
-							"    postman.setNextRequest('change task text');",
-							"};"
+							"pm.collectionVariables.set(\"lastID\", pm.collectionVariables.get(\"allTaskIds\")[pm.collectionVariables.get(\"allTaskIds\").length -1]);"
 						],
 						"type": "text/javascript"
 					}
@@ -143,7 +146,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "59cf4ec0-2198-415c-a4e9-06c61a4286d1",
+						"id": "f341373e-60d8-448b-8ca1-aeff52044d5e",
 						"exec": [
 							""
 						],
@@ -151,7 +154,7 @@
 					}
 				}
 			],
-			"id": "3c34bdac-0750-46b4-bfd2-a524be4489a8",
+			"id": "1971b6b5-6c60-49be-8a24-54667f49730c",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -202,7 +205,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "28fbb9c2-2e7c-4b21-875e-f379a7d765bb",
+						"id": "c8bac753-b65d-4c86-b614-bbe36ba3a9f8",
 						"exec": [
 							"let jsonData = pm.response.json();",
 							"",
@@ -210,30 +213,40 @@
 							"    pm.expect(jsonData.text).to.eql(\"some text\");",
 							"});",
 							"",
-							"const ids = pm.collectionVariables.get(\"ids\")",
-							"console.log(\"jsonData.id is \" + jsonData.id)",
-							"ids.push(jsonData.id)",
-							"console.log(ids)",
-							"pm.collectionVariables.set(\"ids\", ids)",
-							"",
-							"pm.collectionVariables.set('lastID', jsonData.id)",
+							"pm.collectionVariables.set(\"lastID\", jsonData.id);",
 							"",
 							"let currentAmountOfTasks = pm.collectionVariables.get(\"currentAmountOfTasks\");",
+							"console.log(currentAmountOfTasks)",
 							"currentAmountOfTasks++;",
-							"pm.collectionVariables.set('currentAmountOfTasks', currentAmountOfTasks)",
+							"console.log(currentAmountOfTasks)",
+							"pm.collectionVariables.set(\"currentAmountOfTasks\", currentAmountOfTasks);",
 							"",
-							"if(currentAmountOfTasks < pm.collectionVariables.get('targetNumberOfTasks')) {",
-							"    postman.setNextRequest(\"create a task\")",
+							"let counter = 5;",
+							"",
+							"console.log(pm.collectionVariables.get(\"currentAmountOfTasks\"))",
+							"if (counter > pm.collectionVariables.get(\"currentAmountOfTasks\")) {",
+							"    postman.setNextRequest(\"create a task\");",
+							"    console.log(\"create a task\");",
 							"} else {",
-							"    postman.setNextRequest('change task text')",
-							"}",
+							"    postman.setNextRequest(\"change task text\");",
+							"    console.log(\"change task text\");",
+							"};"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d88ede7a-90ea-450e-b79f-a71f7dd422d3",
+						"exec": [
 							""
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
-			"id": "2d9647a2-a19c-49e6-91c0-bf6dcd97db09",
+			"id": "a9628f91-d10d-40fe-995c-62d9d621783c",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -282,7 +295,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "5fb8e376-35dc-4bbc-b03f-4028a30c4df6",
+						"id": "503b8659-4069-4783-ae7b-c6693450b99b",
 						"exec": [
 							"pm.collectionVariables.get(\"lastID\");"
 						],
@@ -292,7 +305,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "f4222093-1b7f-44a8-9fde-07c11e755d46",
+						"id": "dcbd4d98-9379-4045-80d6-6a734cfd8ca8",
 						"exec": [
 							""
 						],
@@ -300,7 +313,7 @@
 					}
 				}
 			],
-			"id": "7fd08370-ccb2-4107-80f1-a7500cb6ec16",
+			"id": "c8930c9d-b508-4d84-95bd-dae53bd8e1e8",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -328,7 +341,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"id\": \"{{lastID}}\",\n  \"text\": \"some new new text\"\n}"
+					"raw": "{\n  \"id\": \"{{lastID}}\",\n  \"text\": \"some new text\"\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/api/tasks/{{lastID}}",
@@ -350,31 +363,42 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a347923e-cad4-45fa-8840-98c8f15bed17",
+						"id": "e2e32aff-a2da-46f6-a789-e2b507ea22a9",
 						"exec": [
-							"let arr = pm.collectionVariables.get('ids')",
+							"let arr = pm.collectionVariables.get(\"allTaskIds\");",
 							"",
-							"arr.forEach((id)=>{",
+							"arr.forEach((taskID) => {",
 							"    pm.sendRequest(",
-							"            {",
-							"                url: `${pm.collectionVariables.get('baseUrl')}/api/tasks/${id}`,",
-							"                method: \"DELETE\",",
-							"                header: {",
-							"                            \"Authorization\": \"Bearer \" + pm.collectionVariables.get('id_token'),",
-							"                            \"Accept\": \"*/*\"",
-							"            }})",
-							"        , function (err, response) {",
-							"        console.log(response);",
+							"        {",
+							"            url: `${pm.collectionVariables.get('baseUrl')}/api/tasks/${taskID}`,",
+							"            method: \"DELETE\",",
+							"            header: {",
+							"                \"Authorization\": \"Bearer \" + pm.collectionVariables.get('id_token'),",
+							"                \"Accept\": \"*/*\"",
+							"            }",
+							"        },",
+							"        function (err, response) {",
+							"            console.log(response);",
 							"        }",
+							"    );",
 							"});",
-							"",
-							"pm.collectionVariables.unset(\"lastID\");"
+							"// pm.collectionVariables.unset(\"lastID\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2b5405df-03c0-4a60-84e6-28c08c1628ad",
+						"exec": [
+							""
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
-			"id": "4c320108-4837-40f2-9803-f427a1a6f9ab",
+			"id": "892ae703-f590-4dd2-97e5-998f6457a97f",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -425,7 +449,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "1636c703-c844-4b3c-b8b6-2e3ca8b3e714",
+				"id": "bc0bc3ab-d778-400f-a973-241bfccc5cdc",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -435,7 +459,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "ce09d6c0-61c5-4aad-9973-4751880f633e",
+				"id": "669572ec-f9cf-4fbb-a8f6-ed89e553167d",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -445,46 +469,43 @@
 	],
 	"variable": [
 		{
-			"id": "b1acc947-67db-48a9-9ee3-1e6217a21ee8",
+			"id": "3792becd-dae6-4e42-a0ee-7be7835e0062",
 			"key": "baseUrl",
 			"value": "http://localhost:8080",
 			"type": "string"
 		},
 		{
-			"id": "902e318f-6f34-40b1-aa27-65e479611f1b",
+			"id": "76c1a791-1e32-4386-8d5e-170ae341d585",
 			"key": "adminLogin",
 			"value": "admin",
 			"type": "string"
 		},
 		{
-			"id": "3c7b629a-b300-4e94-ad55-0cf479cc0a61",
+			"id": "187fe820-4e07-4140-a84d-dd15f0f6394f",
 			"key": "adminPassword",
 			"value": "admin",
 			"type": "string"
 		},
 		{
-			"id": "b7de1ce8-202c-4925-8401-d98713e11949",
+			"id": "5b1f983f-e0b4-4640-b4ab-f4b3f357d35f",
 			"key": "id_token",
 			"value": "{{id_token}}",
 			"type": "string"
 		},
 		{
-			"id": "a1a25007-aec2-4421-80f7-4a67ee13c893",
+			"id": "383152d5-74bd-423e-bea7-e034cd4efbed",
 			"key": "currentAmountOfTasks",
-			"value": "",
-			"type": "string"
+			"value": ""
 		},
 		{
-			"id": "6275563e-6c36-4813-8848-6966e243949f",
-			"key": "targetNumberOfTasks",
-			"value": "",
-			"type": "string"
+			"id": "2f11d1b3-fc87-4eac-bb6f-abdf0620a7d6",
+			"key": "allTaskIds",
+			"value": ""
 		},
 		{
-			"id": "b49fcbfd-5769-4bb2-926a-c8851c2c3970",
-			"key": "ids",
-			"value": "",
-			"type": "string"
+			"id": "5e3961ea-bfce-495b-b3e1-bf3f4527ae93",
+			"key": "lastID",
+			"value": ""
 		}
 	]
 }
