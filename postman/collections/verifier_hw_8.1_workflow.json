@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "ca610a65-36de-4479-9f71-b5c0ae92cdd4",
+		"_postman_id": "6ff3f987-8248-46e8-b7aa-95cd3fb19a82",
 		"name": "verifier_hw_8.1_workflow",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_uid": "20300544-ca610a65-36de-4479-9f71-b5c0ae92cdd4"
+		"_uid": "20300544-6ff3f987-8248-46e8-b7aa-95cd3fb19a82"
 	},
 	"item": [
 		{
@@ -12,7 +12,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "88897b69-9a92-4403-a2a3-963b4aadb508",
+						"id": "0f9171ee-21d0-451d-9f1c-bdbf3fc8cbd7",
 						"exec": [
 							"let jsonBody = pm.response.json();",
 							"",
@@ -29,7 +29,7 @@
 					}
 				}
 			],
-			"id": "11333167-31f9-45d0-8a39-8d8d36074472",
+			"id": "9538715c-ae2f-425a-841f-d4acbb20c576",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -120,7 +120,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "d568e571-f16c-4de1-85c5-5f35f4cd12e2",
+						"id": "86aa43f3-f734-4dfe-a020-a287ebf5abed",
 						"exec": [
 							"let currentAmountOfTasks = pm.response.json().length;",
 							"console.log(\"currentAmountOfTasks\", currentAmountOfTasks);",
@@ -147,7 +147,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "548f2992-409b-4f2c-8363-8f78fcea42a8",
+						"id": "49960cf8-a7e1-49df-b3fb-87ea9f6b619a",
 						"exec": [
 							""
 						],
@@ -155,7 +155,7 @@
 					}
 				}
 			],
-			"id": "4b942978-9db9-409a-b8c4-38e30ddf4acf",
+			"id": "084efa8c-cb87-45cd-a6bb-50b273d0044d",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -206,7 +206,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "837026b0-8070-4acd-a923-b899f007f94b",
+						"id": "42f46818-d7ee-436d-80bc-be578f4733d6",
 						"exec": [
 							"let jsonData = pm.response.json();",
 							"",
@@ -217,7 +217,6 @@
 							"let allMyTasks = pm.collectionVariables.get(\"allMyTasks\");",
 							"allMyTasks.push(jsonData.id);",
 							"pm.collectionVariables.set(\"allMyTasks\", allMyTasks);",
-							"pm.collectionVariables.set(\"lastID\", pm.collectionVariables.get(\"allMyTasks\") [pm.collectionVariables.get(\"allMyTasks\").length -1]);",
 							"",
 							"let currentAmountOfTasks = pm.collectionVariables.get(\"currentAmountOfTasks\");",
 							"console.log(currentAmountOfTasks)",
@@ -228,6 +227,7 @@
 							"if (pm.collectionVariables.get(\"counter\") > pm.collectionVariables.get(\"currentAmountOfTasks\")) {",
 							"    postman.setNextRequest(\"create a task\");",
 							"    console.log(\"create a task\");",
+							"    ",
 							"} else {",
 							"    postman.setNextRequest(\"change task text\");",
 							"    console.log(\"change task text\");",
@@ -239,7 +239,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "20a1d40f-8206-4744-80d2-446ee21f6462",
+						"id": "e766a971-09a7-4c3f-9186-2da089b7b2f3",
 						"exec": [
 							""
 						],
@@ -247,7 +247,7 @@
 					}
 				}
 			],
-			"id": "4b178537-4c6a-46cf-83e6-bdcfcf35388f",
+			"id": "4c9e3c3b-4d46-4dda-abac-99be80f9f77f",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -296,9 +296,13 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "8b4b867d-9661-4d26-8759-e403f1516c9d",
+						"id": "2c25bd76-17a1-4479-871a-39b89a1fa0b7",
 						"exec": [
-							"pm.collectionVariables.get(\"lastID\");"
+							"if (pm.collectionVariables.get(\"allMyTasks\").length != 0) {",
+							"   pm.collectionVariables.set(\"lastID\", pm.collectionVariables.get(\"allMyTasks\") [pm.collectionVariables.get(\"allMyTasks\").length -1]); ",
+							"    } else {",
+							"   pm.collectionVariables.get(\"lastID\");",
+							"};"
 						],
 						"type": "text/javascript"
 					}
@@ -306,7 +310,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6e8a58e1-51cc-41bf-b025-902f4e37e454",
+						"id": "2b3017e8-4ce2-40d8-b140-b9b8c408b5f5",
 						"exec": [
 							""
 						],
@@ -314,7 +318,7 @@
 					}
 				}
 			],
-			"id": "bddd472a-0f53-4cdb-9571-d81c2db33f7a",
+			"id": "5a2bbed0-72c9-4de2-ab81-e7bb5dc75bc5",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -364,7 +368,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6e76c8ed-ee80-40fe-9ea0-1d226ffe2748",
+						"id": "bd28b5a3-0cbf-4bdf-8721-1b9d0b26ca3b",
 						"exec": [
 							"let arr = pm.collectionVariables.get(\"allMyTasks\");",
 							"",
@@ -389,7 +393,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "946fd9f5-67b6-4b05-bba0-e91891ad8a25",
+						"id": "687ae88f-e101-4d79-a800-439359ab7c5b",
 						"exec": [
 							""
 						],
@@ -397,7 +401,7 @@
 					}
 				}
 			],
-			"id": "0a8b56fa-a2b0-40d0-b253-36b23ffbcd5e",
+			"id": "91d839f2-e8f6-4bdc-ad5c-c7dc919adeef",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -448,7 +452,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "960a5a35-5ba8-4ae3-8461-4f5ee1a9cf03",
+				"id": "f7818f86-46c6-4c2d-a39e-e04507ad6960",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -458,7 +462,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "720e195e-903c-4939-a49d-35e09f29e342",
+				"id": "e16d2c40-734a-4337-a7a7-a6c07c39f77e",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -468,47 +472,47 @@
 	],
 	"variable": [
 		{
-			"id": "a1c90689-2b9b-4f95-85a3-7269fb35b3df",
+			"id": "cb251674-0efe-492e-96cc-dcc1a317fcb6",
 			"key": "baseUrl",
 			"value": "http://localhost:8080",
 			"type": "string"
 		},
 		{
-			"id": "1c61b43f-2ed2-41a2-baf3-bd13910d3fd4",
+			"id": "90e5e9eb-3a6b-4980-988d-1236b6cca77c",
 			"key": "adminLogin",
 			"value": "admin",
 			"type": "string"
 		},
 		{
-			"id": "3fbd7d5d-bffc-4e05-b188-00bedc06ddb3",
+			"id": "0756ab73-7e55-4d1c-962b-042ee92c3596",
 			"key": "adminPassword",
 			"value": "admin",
 			"type": "string"
 		},
 		{
-			"id": "81eeef8d-989a-441b-8834-0e3094d222b1",
+			"id": "5e01be85-1193-44ae-907d-ee922c27bb5c",
 			"key": "id_token",
 			"value": "{{id_token}}",
 			"type": "string"
 		},
 		{
-			"id": "da93f796-5eaf-437c-8f27-f2cdb5e2b4be",
+			"id": "6518d9ba-cde5-46ab-acb7-c46b33bebe04",
 			"key": "currentAmountOfTasks",
 			"value": ""
 		},
 		{
-			"id": "edf25979-0aea-4b0d-bd4f-231f814bbf92",
+			"id": "33f5c01b-c3e6-4f93-986d-d24e4d539ca2",
 			"key": "counter",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "c34637f4-4e16-46d6-9cb5-c176494db8a0",
+			"id": "a1f71719-7c08-4f9f-85c5-870fd5379b06",
 			"key": "allMyTasks",
 			"value": ""
 		},
 		{
-			"id": "bc7f13f0-b842-438a-93db-52a1adc636b1",
+			"id": "fbcb515d-cddd-4df1-aef3-300fbc91434d",
 			"key": "lastID",
 			"value": ""
 		}
